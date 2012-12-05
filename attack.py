@@ -18,15 +18,12 @@ def basic_options():
     parser = OptionParser()
     parser.add_option("-r", "--rate", dest="rate",
                       help="Anomalous message rate, in messages per minute")
-    parser.add_option("-b", "--begin", dest="end",
+    parser.add_option("-b", "--begin", dest="begin",
                       help="Begin of the anomaly")
     parser.add_option("-e", "--end", dest="end", help="End of the anomaly")
     parser.add_option("-n", "--nodes", dest="nodes",
                       help="Nodes involved in the anomaly")
     return parser
-
-def date(s):
-    return s
 
 class anomaly(object):
     '''Decorator for an anomaly generator. Takes as arguments the
@@ -39,18 +36,18 @@ class anomaly(object):
         dt = datetime.strptime(begin, "%Y/%m/%d-%H:%M:%S")
         self.begin = time.mktime(dt.timetuple())
         dt = datetime.strptime(end, "%Y/%m/%d-%H:%M:%S")
-        print self.end
-        self.rate = 60.0/rate
-        self.hosts = hosts
+        self.end = time.mktime(dt.timetuple())
+        self.rate = 60.0/int(rate)
+        self.hosts = hosts.split(",")
         self.now = self.begin
-        self.nhosts = len(hosts)-1
+        self.nhosts = len(self.hosts)-1
 
     def __call__(self, f):
         '''Wrapper function for the decorator'''
         def wrapped_f(*args, **kwargs):
             while self.now <= self.end:
                 if randint(0,1) == 1:
-                    host = randint(0,self.nhosts)
+                    host = randint(0, self.nhosts)
                     f(self.now, self.hosts[host], *args, **kwargs)
                 self.now += self.rate
         return wrapped_f
