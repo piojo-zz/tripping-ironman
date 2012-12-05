@@ -52,6 +52,19 @@ class anomaly(object):
                 self.now += self.rate
         return wrapped_f
 
+class message_burst(object):
+    '''Pass many messages with the same timestamp and host to the
+    formatter'''
+    def __init__(self, nmessages):
+        self.nmessages = nmessages
+
+    def __call__(self, f):
+        def wrapped_f(*args, **kwargs):
+            for i in range(self.nmessages):
+                f(*args, iteration=i, **kwargs)
+        return wrapped_f
+
+
 def syslog_printer(f):
     '''Decorator. Prints the string returned by the decorated function
     as if it were a Syslog entry, with an rsyslog-like timestamp and a
