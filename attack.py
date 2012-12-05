@@ -60,8 +60,9 @@ class message_burst(object):
 
     def __call__(self, f):
         def wrapped_f(*args, **kwargs):
+            pid = randint(2,65536)
             for i in range(self.nmessages):
-                f(*args, iteration=i, **kwargs)
+                f(*args, iteration=i, pid=pid, **kwargs)
         return wrapped_f
 
 

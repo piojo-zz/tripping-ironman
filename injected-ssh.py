@@ -23,8 +23,8 @@ if __name__ == '__main__':
     @anomaly(options.begin, options.end, options.rate, options.nodes)
     @message_burst(len(TROUBLESOME_MESSAGES))
     @syslog_printer
-    def generate_ssh_errors(iteration):
-        return TROUBLESOME_MESSAGES[iteration]
+    def generate_ssh_errors(iteration, pid):
+        return TROUBLESOME_MESSAGES[iteration] % pid
 
 
     generate_ssh_errors()
